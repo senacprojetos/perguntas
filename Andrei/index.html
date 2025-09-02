@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubra seu curso ideal no Senac</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 80vh;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #0066a6;
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #0066a6;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question {
+            display: none;
+        }
+        
+        .question.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .option-btn {
+            padding: 15px 30px;
+            border: 2px solid #0066a6;
+            background-color: white;
+            color: #0066a6;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .option-btn:hover {
+            background-color: #0066a6;
+            color: white;
+        }
+        
+        .feedback {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .feedback.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #0066a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .result-container {
+            display: none;
+        }
+        
+        .result-container.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .contact-form {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #0066a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .skip-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo img {
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <!-- Substitua pelo logo do Senac -->
+            <h2 style="color: #0066a6;">SENAC</h2>
+        </div>
+        
+        <h1>Descubra seu curso ideal no Senac</h1>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="question active" id="question-0">
+            <p class="question-text">Vamos descobrir qual curso do Senac combina mais com você! Responda as perguntas a seguir:</p>
+            <div class="options">
+                <button class="option-btn" onclick="startQuiz()">Começar</button>
+            </div>
+        </div>
+        
+        <div class="question" id="question-1">
+            <p class="question-text">1) Você está empregado?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(1, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(1, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-1"></div>
+        </div>
+        
+        <div class="question" id="question-2">
+            <p class="question-text">2) Atualmente você está estudando?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(2, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(2, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-2"></div>
+        </div>
+        
+        <div class="question" id="question-3">
+            <p class="question-text">3) Você domina o uso do computador (pacote Office)?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(3, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(3, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-3"></div>
+        </div>
+        
+        <div class="question" id="question-4">
+            <p class="question-text">4) Já utiliza Inteligência Artificial em seu dia a dia?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(4, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(4, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-4"></div>
+        </div>
+        
+        <div class="question" id="question-5">
+            <p class="question-text">5) Fez algum curso de atualização nos últimos 2 anos?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(5, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(5, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-5"></div>
+        </div>
+        
+        <div class="question" id="question-6">
+            <p class="question-text">6) Possui aplicativos em celular utilizados para o seu trabalho e organização do dia a dia?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(6, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(6, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-6"></div>
+        </div>
+        
+        <div class="question" id="question-7">
+            <p class="question-text">7) Você compreende minimamente um outro idioma?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(7, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(7, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-7"></div>
+        </div>
+        
+        <div class="question" id="question-8">
+            <p class="question-text">8) Já tem um objetivo profissional definido?</p>
+            <div class="options">
+                <button class="option-btn" onclick="selectOption(8, true)">Sim</button>
+                <button class="option-btn" onclick="selectOption(8, false)">Não</button>
+            </div>
+            <div class="feedback" id="feedback-8"></div>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h2>Seu resultado:</h2>
+            <div id="final-result"></div>
+            
+            <div class="contact-form">
+                <h3>Quer receber informações sobre cursos?</h3>
+                <p>Preencha seus dados abaixo (opcional):</p>
+                
+                <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" placeholder="Seu nome">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" placeholder="Seu e-mail">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Telefone:</label>
+                    <input type="tel" id="phone" placeholder="Seu telefone">
+                </div>
+                
+                <button class="submit-btn" onclick="saveContact()">Enviar dados</button>
+                <button class="skip-btn" onclick="skipContact()">Pular esta etapa</button>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-btn" id="prev-btn" onclick="prevQuestion()" disabled>Anterior</button>
+            <button class="nav-btn" id="next-btn" onclick="nextQuestion()" disabled>Próxima</button>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // Configuração do Firebase - substitua com suas credenciais
+const firebaseConfig = {
+  apiKey: "AIzaSyDwyMpOCNWeoUC5BPgKB_H_nUBFyHhm_vk",
+  authDomain: "quiz-b019e.firebaseapp.com",
+  projectId: "quiz-b019e",
+  storageBucket: "quiz-b019e.firebasestorage.app",
+  messagingSenderId: "820139121581",
+  appId: "1:820139121581:web:5784d55acf524d81d75f24",
+  measurementId: "G-5M624DM340"
+};
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Variáveis globais
+        let currentQuestion = 0;
+        const totalQuestions = 8;
+        const answers = {};
+        const feedbacks = {
+            1: {
+                true: "Você está trabalhando, parabéns! Estar empregado já é um passo importante para manter sua experiência ativa e abrir portas para novas oportunidades. Continue investindo em si mesmo para não apenas se manter no mercado, mas também crescer.",
+                false: "Você desempregado, mas não desanime. Segundo dados do IBGE, cerca de 7,5% dos brasileiros estão desempregados (2025). Isso mostra que a competição é grande, mas também que quem se qualifica aumenta muito suas chances de voltar ao mercado. Talvez seja a hora de investir em cursos profissionalizantes para reverter essa condição."
+            },
+            2: {
+                true: "Estudar é uma das maiores vantagens competitivas no mundo do trabalho. Quem estuda aumenta em até 73% as chances de conquistar melhores salários, segundo pesquisas do Ipea. Você já está no caminho certo!",
+                false: "Atenção: deixar de estudar pode ser um freio na sua carreira. Em um mundo em que as profissões mudam rapidamente, quem não estuda fica para trás. Que tal começar com algo acessível, acesse as oficinas online gratuitas do Senac em senacrs.com.br"
+            },
+            3: {
+                true: "O domínio do Excel, Word e PowerPoint é praticamente uma necessidade universal no mercado de trabalho. Esse conhecimento torna você mais produtivo e preparado para qualquer vaga.",
+                false: "Se você ainda não domina o uso do computador vale a pena aprender. O pacote Office é exigido em 8 de cada 10 vagas de emprego administrativo no Brasil. Hoje existem cursos que podem ser concluídos em poucas semanas."
+            },
+            4: {
+                true: "Você sabia que o uso de IA é cada vez mais valorizado pelas empresas? Segundo a PwC, até 2030, a IA pode adicionar até 15,7 trilhões de dólares à economia global. Você já está surfando essa onda!",
+                false: "Atenção, você está deixando passar uma grande oportunidade. A IA já está transformando o mercado de trabalho em todas as áreas. Aprender a usá-la não exige formação em tecnologia: qualquer pessoa pode começar com ferramentas simples para aumentar sua produtividade."
+            },
+            5: {
+                true: "Parabéns por ter feito um curso nos últimos 2 anos! Esse é o espírito de um profissional atualizado. Estudos mostram que quem investe regularmente em capacitação tem até 30% mais chances de progressão na carreira.",
+                false: "O conhecimento envelhece cada vez mais rapidamente. Em muitas áreas, o que você aprendeu há 5 anos pode já estar ultrapassado. Pequenos cursos podem reabrir portas para novas oportunidades."
+            },
+            6: {
+                true: "Hoje o celular é uma ferramenta essencial na vida da gente e no trabalho. Profissionais que utilizam aplicativos para otimizar tarefas ganham em produtividade e organização.",
+                false: "Se você ainda não possui apps em seu celular utilizados para o trabalho e organização do dia a dia você pode estar perdendo tempo. Há aplicativos gratuitos que ajudam desde organização de tarefas até controle de finanças. Inserir essa prática no dia a dia também é um diferencial importante."
+            },
+            7: {
+                true: "Por fim, dentre as competências necessárias atualmente, dominar outro idioma é abrir portas para o mundo. O inglês, por exemplo, pode aumentar o salário em até 61% no Brasil, segundo a Catho.",
+                false: "Dominar um segundo idioma é, também, uma habilidade estratégica atualmente. Mesmo aprender o básico já faz diferença."
+            },
+            8: {
+                true: "Você tem um objetivo profissional definido, parabéns! Ter clareza do objetivo ajuda a focar energia e esforços, transformando passos em conquistas. Isso mostra que você tem visão de futuro.",
+                false: "Sem metas claras, é fácil andar em círculos. Definir um objetivo profissional é como traçar um mapa: você pode até mudar o caminho, mas sabe para onde quer ir. Reflita sobre o que realmente deseja alcançar."
+            }
+        };
+        
+        // Iniciar o questionário
+        function startQuiz() {
+            currentQuestion = 1;
+            updateProgressBar();
+            showQuestion(currentQuestion);
+            document.getElementById('next-btn').disabled = false;
+        }
+        
+        // Mostrar pergunta específica
+        function showQuestion(n) {
+            // Esconder todas as perguntas
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(question => {
+                question.classList.remove('active');
+            });
+            
+            // Mostrar a pergunta atual
+            document.getElementById('question-' + n).classList.add('active');
+            
+            // Atualizar botões de navegação
+            document.getElementById('prev-btn').disabled = n === 1;
+            document.getElementById('next-btn').disabled = !answers[n];
+            
+            // Se for a última pergunta, mudar o texto do botão
+            if (n === totalQuestions) {
+                document.getElementById('next-btn').textContent = 'Ver resultado';
+            } else {
+                document.getElementById('next-btn').textContent = 'Próxima';
+            }
+        }
+        
+        // Atualizar barra de progresso
+        function updateProgressBar() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        }
+        
+        // Selecionar uma opção
+        function selectOption(questionId, value) {
+            answers[questionId] = value;
+            
+            // Mostrar feedback
+            const feedbackElement = document.getElementById('feedback-' + questionId);
+            feedbackElement.textContent = feedbacks[questionId][value];
+            feedbackElement.classList.add('active');
+            
+            // Habilitar botão próximo
+            document.getElementById('next-btn').disabled = false;
+        }
+        
+        // Próxima pergunta
+        function nextQuestion() {
+            if (currentQuestion === totalQuestions) {
+                // Se for a última pergunta, mostrar resultado
+                showResult();
+            } else {
+                currentQuestion++;
+                updateProgressBar();
+                showQuestion(currentQuestion);
+            }
+        }
+        
+        // Pergunta anterior
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                updateProgressBar();
+                showQuestion(currentQuestion);
+            }
+        }
+        
+        // Mostrar resultado final
+        function showResult() {
+            // Calcular número de respostas "Sim"
+            let yesCount = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                if (answers[i]) yesCount++;
+            }
+            
+            // Determinar o resultado com base no número de "Sim"
+            let resultText = "";
+            if (yesCount >= 6) {
+                resultText = "<p>Agora é a sua vez de crescer! Suas respostas indicam que você está no caminho certo, já construiu uma boa base e deve continuar se atualizando. O próximo passo pode ser buscar especializações e ampliar seu networking. Conte com o Senac para seguir nessa jornada de crescimento!</p>";
+                resultText += "<p>Com base no seu perfil, recomendamos cursos de especialização e aprofundamento em áreas como Gestão, Tecnologia ou Marketing.</p>";
+            } else if (yesCount >= 3) {
+                resultText = "<p>Agora é a sua vez de inovar! Suas respostas indicam que você já tem conquistas, mas precisa acelerar a qualificação para não perder espaço. Um plano de estudos e a adoção de novas ferramentas tecnológicas podem fazer a diferença. Conte com o Senac para acelerar essa jornada de crescimento!</p>";
+                resultText += "<p>Com base no seu perfil, recomendamos cursos de capacitação em ferramentas digitais, idiomas ou cursos técnicos.</p>";
+            } else {
+                resultText = "<p>Agora é a sua vez de mudar! Suas respostas mostram que é hora de agir! Não encare como crítica, mas como ponto de partida. Comece por algo simples: um curso online, aprender a usar uma IA ou aplicativos no celular. Cada pequeno passo abre novas oportunidades e o Senac está aqui para te ajudar.</p>";
+                resultText += "<p>Com base no seu perfil, recomendamos cursos introdutórios e de qualificação básica para ingressar no mercado de trabalho.</p>";
+            }
+            
+            // Exibir resultado
+            document.getElementById('final-result').innerHTML = resultText;
+            
+            // Esconder todas as perguntas e mostrar o resultado
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(question => {
+                question.classList.remove('active');
+            });
+            
+            document.getElementById('result-container').classList.add('active');
+            document.getElementById('prev-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('progress-bar').style.width = '100%';
+            
+            // Salvar respostas no Firebase
+            saveAnswersToFirebase();
+        }
+        
+        // Salvar respostas no Firebase
+        function saveAnswersToFirebase() {
+            db.collection("quiz_responses").add({
+                answers: answers,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                yesCount: Object.values(answers).filter(a => a).length
+            })
+            .then((docRef) => {
+                console.log("Respostas salvas com ID: ", docRef.id);
+            })
+            .catch((error) => {
+                console.error("Erro ao salvar respostas: ", error);
+            });
+        }
+        
+        // Salvar dados de contato
+        function saveContact() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            if (email && !validateEmail(email)) {
+                alert("Por favor, insira um e-mail válido.");
+                return;
+            }
+            
+            // Salvar no Firebase
+            db.collection("contacts").add({
+                name: name,
+                email: email,
+                phone: phone,
+                answers: answers,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then((docRef) => {
+                alert("Obrigado! Seus dados foram salvos e entraremos em contato em breve.");
+                document.querySelector('.contact-form').innerHTML = "<p>Obrigado por participar!</p>";
+            })
+            .catch((error) => {
+                console.error("Erro ao salvar contato: ", error);
+                alert("Ocorreu um erro ao salvar seus dados. Tente novamente.");
+            });
+        }
+        
+        // Pular o formulário de contato
+        function skipContact() {
+            document.querySelector('.contact-form').innerHTML = "<p>Obrigado por participar do questionário!</p>";
+        }
+        
+        // Validar e-mail
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Profissional</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark {
+      background: #121212;
+      color: #f1f1f1;
+    }
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .question, .response, #finalStep, #result {
+      display: none;
+      margin-bottom: 20px;
+    }
+    .question.active, .response.active, #finalStep.active, #result.active {
+      display: block;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #0077cc;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 5px;
+    }
+    button:hover { background: #005fa3; }
+    .dark button { background: #3399ff; }
+    .toggle-mode {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px;
+      border-radius: 50%;
+    }
+    input[type="text"], input[type="email"], input[type="tel"] {
+      display: block;
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-mode" onclick="toggleMode()">🌙</button>
+  <div class="container">
+    <h1>Quiz Profissional</h1>
+    <div id="quiz"></div>
+
+    <!-- Etapa final com checkbox e dados opcionais -->
+    <div id="finalStep">
+      <label>
+        <input type="checkbox" id="acceptTerms"> Concordo em enviar minhas respostas
+      </label>
+      <h3>Dados de contato (opcional):</h3>
+      <input type="text" id="name" placeholder="Nome">
+      <input type="email" id="email" placeholder="Email">
+      <input type="tel" id="phone" placeholder="Telefone">
+      <button onclick="finishQuiz()">Ver resultado</button>
+    </div>
+
+    <!-- Resultado final -->
+    <div id="result"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 🔥 Configure aqui com suas credenciais
+const firebaseConfig = {
+  apiKey: "AIzaSyDXxROxwgMhkFV4W0kclg0qz2ZxF35wFO0",
+  authDomain: "quiz-senac-fcbd8.firebaseapp.com",
+  databaseURL: "https://quiz-senac-fcbd8-default-rtdb.firebaseio.com",
+  projectId: "quiz-senac-fcbd8",
+  storageBucket: "quiz-senac-fcbd8.firebasestorage.app",
+  messagingSenderId: "455632348529",
+  appId: "1:455632348529:web:46db46d688f3bf6c2342d0",
+  measurementId: "G-KH98HQSRMP"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Perguntas
+    const questions = [
+      {
+        text: "Você está empregado?",
+        yes: "✅ Sim: Você está trabalhando, parabéns! Estar empregado já é um passo importante para manter sua experiência ativa e abrir portas para novas oportunidades. Continue investindo em si mesmo para não apenas se manter no mercado, mas também crescer.",
+        no: "❌ Não: Você desempregado, mas não desanime. Segundo dados do IBGE, cerca de 7,5% dos brasileiros estão desempregados (2025). Isso mostra que a competição é grande, mas também que quem se qualifica aumenta muito suas chances de voltar ao mercado. Talvez seja a hora de investir em cursos profissionalizantes para reverter essa condição. "
+      },
+      {
+        text: "Atualmente você está estudando?",
+        yes: "✅ Sim: Estudar é uma das maiores vantagens competitivas no mundo do trabalho. Quem estuda aumenta em até 73% as chances de conquistar melhores salários, segundo pesquisas do Ipea. Você já está no caminho certo! ",
+        no: "❌ Não: Atenção: deixar de estudar pode ser um freio na sua carreira. Em um mundo em que as profissões mudam rapidamente, quem não estuda fica para trás. Que tal começar com algo acessível, acesse as oficinas online gratuitas do Senac em senacrs.com.br "
+      },
+      {
+        text: "Você domina o uso do computador (pacote Office)?",
+        yes: "✅ Sim: O domínio do Excel, Word e PowerPoint é praticamente uma necessidade universal no mercado de trabalho. Esse conhecimento torna você mais produtivo e preparado para qualquer vaga. ",
+        no: "❌ Não: Se você ainda não domina o uso do computador vale a pena aprender. O pacote Office é exigido em 8 de cada 10 vagas de emprego administrativo no Brasil. Hoje existem cursos que podem ser concluídos em poucas semanas. "
+      },
+      {
+        text: "Já utiliza Inteligência Artificial em seu dia a dia?",
+        yes: "✅ Sim: Você sabia que o uso de IA é cada vez mais valorizado pelas empresas? Segundo a PwC, até 2030, a IA pode adicionar até 15,7 trilhões de dólares à economia global. Você já está surfando essa onda! ",
+        no: "❌ Não: Atenção, você está deixando passar uma grande oportunidade. A IA já está transformando o mercado de trabalho em todas as áreas. Aprender a usá-la não exige formação em tecnologia: qualquer pessoa pode começar com ferramentas simples para aumentar sua produtividade. "
+      },
+      {
+        text: "Fez algum curso de atualização nos últimos 2 anos?",
+        yes: "✅ Sim: Parabéns por ter feito um curso nos últimos 2 anos! Esse é o espírito de um profissional atualizado. Estudos mostram que quem investe regularmente em capacitação tem até 30% mais chances de progressão na carreira. ",
+        no: "❌ Não: O conhecimento envelhece cada vez mais rapidamente. Em muitas áreas, o que você aprendeu há 5 anos pode já estar ultrapassado. Pequenos cursos podem reabrir portas para novas oportunidades."
+      },
+      {
+        text: "Possui aplicativos em celular utilizados para o seu trabalho?",
+        yes: "✅ Sim: Hoje o celular é uma ferramenta essencial na vida da gente e no trabalho. Profissionais que utilizam aplicativos para otimizar tarefas ganham em produtividade e organização. ",
+        no: "❌ Não: Se você ainda não possui apps em seu celular utilizados para o trabalho e organização do dia a dia você pode estar perdendo tempo. Há aplicativos gratuitos que ajudam desde organização de tarefas até controle de finanças. Inserir essa prática no dia a dia também é um diferencial importante."
+      },
+      {
+        text: "Você compreende minimamente um outro idioma?",
+        yes: "✅ Sim: Por fim, dentre as competências necessárias atualmente, dominar outro idioma é abrir portas para o mundo. O inglês, por exemplo, pode aumentar o salário em até 61% no Brasil, segundo a Catho. ",
+        no: "❌ Não: Dominar um segundo idioma é, também, uma habilidade estratégica atualmente. Mesmo aprender o básico já faz diferença."
+      },
+      {
+        text: "Já tem um objetivo profissional definido?",
+        yes: "✅ Sim: Você tem um objtivo profissional definido, parabéns! Ter clareza do objetivo ajuda a focar energia e esforços, transformando passos em conquistas. Isso mostra que você tem visão de futuro. ",
+        no: "❌ Não: Sem metas claras, é fácil andar em círculos. Definir um objetivo profissional é como traçar um mapa: você pode até mudar o caminho, mas sabe para onde quer ir. Reflita sobre o que realmente deseja alcançar."
+      }
+    ];
+
+    const finalMessages = {
+      moreYes: "Agora é a sua vez de crescer! Suas respostas indicam que você está no caminho certo, já construiu uma boa base e deve continuar se atualizando. O próximo passo pode ser buscar especializações e ampliar seu networking. Conte com o Senac para seguir nessa jornada de crescimento! ",
+      balanced: "Agora é a sua vez de inovar! Suas respostas indicam que você já tem conquistas, mas precisa acelerar a qualificação para não perder espaço. Um plano de estudos e a adoção de novas ferramentas tecnológicas podem fazer a diferença. Conte com o Senac para acelerar essa jornada de crescimento! ",
+      moreNo: "Agora é a sua vez de mudar! Suas respostas mostram que é hora de agir! Não encare como crítica, mas como ponto de partida. Comece por algo simples: um curso online, aprender a usar uma IA ou aplicativos no celular. Cada pequeno passo abre novas oportunidades e o Senac está aqui para te ajudar. "
+    };
+
+    let current = 0;
+    let yesCount = 0, noCount = 0;
+
+    const quizDiv = document.getElementById("quiz");
+    const finalStep = document.getElementById("finalStep");
+    const resultDiv = document.getElementById("result");
+
+    function showQuestion() {
+      if (current < questions.length) {
+        const q = questions[current];
+        quizDiv.innerHTML = `
+          <div class="question active">
+            <h3>${q.text}</h3>
+            <button onclick="answer(true)">Sim</button>
+            <button onclick="answer(false)">Não</button>
+          </div>`;
+      } else {
+        quizDiv.innerHTML = "";
+        finalStep.classList.add("active");
+      }
+    }
+
+    window.answer = function(choice) {
+      const q = questions[current];
+      const text = choice ? q.yes : q.no;
+      if (choice) yesCount++; else noCount++;
+
+      quizDiv.innerHTML = `<div class="response active"><p>${text}</p>
+        <button onclick="nextQuestion()">Próxima</button></div>`;
+    };
+
+    window.nextQuestion = function() {
+      current++;
+      showQuestion();
+    };
+
+    window.finishQuiz = async function() {
+      const accept = document.getElementById("acceptTerms").checked;
+      if (!accept) {
+        alert("Você deve marcar o checkbox para ver o resultado.");
+        return;
+      }
+
+      let message = "";
+      if (yesCount > noCount) message = finalMessages.moreYes;
+      else if (yesCount === noCount) message = finalMessages.balanced;
+      else message = finalMessages.moreNo;
+
+      resultDiv.innerHTML = `<h2>Resultado Final</h2><p>${message}</p>`;
+      resultDiv.classList.add("active");
+
+      // Dados opcionais
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      const dataToSend = {
+        yesCount,
+        noCount,
+        timestamp: new Date()
+      };
+
+      if (name || email || phone) {
+        dataToSend.name = name;
+        dataToSend.email = email;
+        dataToSend.phone = phone;
+      }
+
+      try {
+        await addDoc(collection(db, "respostas"), dataToSend);
+        alert("Respostas enviadas com sucesso!");
+      } catch (e) {
+        alert("Erro ao enviar: " + e.message);
+      }
+
+      finalStep.classList.remove("active");
+    };
+
+    window.toggleMode = function() {
+      document.body.classList.toggle("dark");
+    };
+
+    showQuestion();
+  </script>
+</body>
+</html>

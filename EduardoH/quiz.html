@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENAC | Quiz Vocacional</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo-container">
+            <img src="logo-senac.png" alt="Logo SENAC">
+        </div>
+    </header>
+
+    <main class="quiz-page-container">
+        <div class="quiz-container">
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+
+            <div id="quiz-session">
+                <h2 id="question"></h2>
+                <div id="answers-container">
+                </div>
+            </div>
+
+            <div id="result-session" class="hidden">
+                <h2>Analisando seu perfil...</h2>
+                <div class="loader"></div>
+            </div>
+
+            <div id="contact-session" class="hidden">
+                <h3>Gostou do resultado?</h3>
+                <p>Deixe seus dados para receber mais informações sobre os cursos ideais para você!</p>
+                <form id="contact-form">
+                    <input type="text" id="userName" placeholder="Seu nome completo" required>
+                    <input type="email" id="userEmail" placeholder="Seu melhor e-mail" required>
+                    <input type="tel" id="userPhone" placeholder="Seu telefone (WhatsApp)">
+                    <button type="submit" class="cta-button">Enviar Contato</button>
+                </form>
+            </div>
+            
+        </div>
+    </main>
+    
+    <script type="module" src="quiz.js"></script>
+</body>
+</html>

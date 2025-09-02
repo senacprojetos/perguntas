@@ -1,0 +1,132 @@
+* {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .screen {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        h1, h2 {
+            color: #0066a6;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .btn {
+            background-color: #0066a6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #004d80;
+        }
+        
+        .btn-option {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .progress {
+            height: 10px;
+            background-color: #0066a6;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .result-course {
+            background: linear-gradient(135deg, #0066a6 0%, #004d80 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            border-left: 5px solid #ff8800;
+        }
+        
+        .result-course h2 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .result-course p {
+            color: white;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        input {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .feedback {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #0066a6;
+            text-align: left;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .score-display {
+            background-color: #ff8800;
+            color: #0066a6;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 16px;
+        }

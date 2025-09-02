@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Vocacional - Senac</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #005c97, #00365e);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .screen {
+            padding: 30px;
+            display: none;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header img {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+        
+        .header h1 {
+            color: #005c97;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .question-count {
+            text-align: right;
+            color: #005c97;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .question {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #005c97;
+            text-align: center;
+        }
+        
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .option {
+            padding: 15px 25px;
+            border: 2px solid #005c97;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .option:hover {
+            background-color: #e6f2ff;
+        }
+        
+        .option.selected {
+            background-color: #005c97;
+            color: white;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #005c97, #00365e);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result-text {
+            background-color: #f0f8ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #005c97;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            border-color: #005c97;
+            outline: none;
+        }
+        
+        .contact-form {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+        }
+        
+        .course-suggestion {
+            text-align: center;
+            margin: 25px 0;
+            padding: 15px;
+            background: linear-gradient(to right, #e6f2ff, #cce5ff);
+            border-radius: 12px;
+        }
+        
+        .course-suggestion h3 {
+            color: #005c97;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo span {
+            font-size: 28px;
+            font-weight: 800;
+            color: #005c97;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .question {
+                font-size: 18px;
+            }
+            
+            .screen {
+                padding: 20px;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela de Boas-vindas -->
+        <div id="welcome-screen" class="screen active">
+            <div class="logo">
+                <span>SENAC</span>
+            </div>
+            <div class="header">
+                <h1>Descubra seu curso ideal</h1>
+                <p>Responda nosso teste e descubra qual curso do Senac combina mais com você!</p>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+                <img src="senac.jpg" alt="Senac" style="max-width: 50%; border-radius: 10px;">
+            </div>
+            <button id="start-btn" class="btn">Iniciar Teste</button>
+            <button id="test-btn" class="btn" style="background: #666; margin-top: 10px;">Testar Conexão Firebase</button>
+        </div>
+
+        <!-- Tela de Perguntas -->
+        <div id="question-screen" class="screen">
+            <div class="question-count">Pergunta <span id="current-question">1</span> de <span id="total-questions">8</span></div>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <h2 id="question-text" class="question"></h2>
+            <div class="options">
+                <div id="option-yes" class="option" data-value="yes">
+                    <i class="fas fa-check"></i> Sim
+                </div>
+                <div id="option-no" class="option" data-value="no">
+                    <i class="fas fa-times"></i> Não
+                </div>
+            </div>
+            <button id="next-btn" class="btn" disabled>Próxima</button>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="result-screen" class="screen">
+            <div class="header">
+                <h1>Seu resultado</h1>
+                <p>Confira abaixo o curso mais compatível com suas respostas</p>
+            </div>
+            
+            <div class="course-suggestion">
+                <p id="course-result">Carregando...</p>
+            </div>
+            
+            <div class="result-text">
+                <h3>Seu perfil:</h3>
+                <p id="result-text"></p>
+            </div>
+            
+            <div class="contact-form">
+                <h3>Quer saber mais?</h3>
+                <p>Deixe seus dados para receber informações sobre o curso recomendado</p>
+                
+                <div id="error-message" class="error-message"></div>
+                
+                <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" placeholder="Seu nome completo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" placeholder="seu@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Telefone:</label>
+                    <input type="tel" id="phone" placeholder="(11) 99999-9999">
+                </div>
+                
+                <button id="submit-btn" class="btn">Enviar dados</button>
+                <button id="skip-btn" class="btn" style="background: #666; margin-top: 10px;">Pular</button>
+            </div>
+        </div>
+
+        <!-- Tela de Agradecimento -->
+        <div id="thankyou-screen" class="screen">
+            <div class="header">
+                <h1>Obrigado por participar!</h1>
+                <p>Seus dados foram salvos e em breve entraremos em contato</p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <i class="fas fa-check-circle" style="font-size: 80px; color: #4CAF50;"></i>
+            </div>
+            
+            <p style="text-align: center; margin-bottom: 20px;">
+                Acesse <a href="https://www.senacrs.com.br" style="color: #005c97;">senacrs.com.br</a> para conhecer todos os cursos disponíveis.
+            </p>
+            
+            <button id="restart-btn" class="btn">Fazer teste novamente</button>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Configuração do Firebase - SUBSTITUÍDA pelas suas credenciais
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4zzLOq7I1A2CYOoKGccub8Ti2u50Ezr0",
+            authDomain: "senac-lajeado-f3264.firebaseapp.com",
+            projectId: "senac-lajeado-f3264",
+            storageBucket: "senac-lajeado-f3264.firebasestorage.app",
+            messagingSenderId: "478615708896",
+            appId: "1:478615708896:web:8dd23c9c4d58995a1d5c85",
+            measurementId: "G-YB1HX0VH3J"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Dados do questionário
+        const questions = [
+            {
+                text: "Você está empregado?",
+                yes: "Você está trabalhando, parabéns! Estar empregado já é um passo importante para manter sua experiência ativa e abrir portas para novas oportunidades. Continue investindo em si mesmo para não apenas se manter no mercado, mas também crescer.",
+                no: "Você desempregado, mas não desanime. Segundo dados do IBGE, cerca de 7,5% dos brasileiros estão desempregados (2025). Isso mostra que a competição é grande, mas também que quem se qualifica aumenta muito suas chances de voltar ao mercado. Talvez seja a hora de investir em cursos profissionalizantes para reverter essa condição."
+            },
+            {
+                text: "Atualmente você está estudando?",
+                yes: "Estudar é uma das maiores vantagens competitivas no mundo do trabalho. Quem estuda aumenta em até 73% as chances de conquistar melhores salários, segundo pesquisas do Ipea. Você já está no caminho certo!",
+                no: "Atenção: deixar de estudar pode ser um freio na sua carreira. Em um mundo em que as profissões mudam rapidamente, quem não estuda fica para trás. Que tal começar com algo acessível, acesse as oficinas online gratuitas do Senac em senacrs.com.br"
+            },
+            {
+                text: "Você domina o uso do computador (pacote Office)?",
+                yes: "O domínio do Excel, Word e PowerPoint é praticamente uma necessidade universal no mercado de trabalho. Esse conhecimento torna você mais produtivo e preparado para qualquer vaga.",
+                no: "Se você ainda não domina o uso do computador vale a pena aprender. O pacote Office é exigido em 8 de cada 10 vagas de emprego administrativo no Brasil. Hoje existem cursos que podem ser concluídos em poucas semanas."
+            },
+            {
+                text: "Já utiliza Inteligência Artificial em seu dia a dia?",
+                yes: "Você sabia que o uso de IA é cada vez mais valorizado pelas empresas? Segundo a PwC, até 2030, a IA pode adicionar até 15,7 trilhões de dólares à economia global. Você já está surfando essa onda!",
+                no: "Atenção, você está deixando passar uma grande oportunidade. A IA já está transformando o mercado de trabalho em todas as áreas. Aprender a usá-la não exige formação em tecnologia: qualquer pessoa pode começar com ferramentas simples para aumentar sua produtividade."
+            },
+            {
+                text: "Fez algum curso de atualização nos últimos 2 anos?",
+                yes: "Parabéns por ter feito um curso nos últimos 2 anos! Esse é o espírito de um profissional atualizado. Estudos mostram que quem investe regularmente em capacitação tem até 30% mais chances de progressão na carreira.",
+                no: "O conhecimento envelhece cada vez mais rapidamente. Em muitas áreas, o que você aprendou há 5 anos pode já estar ultrapassado. Pequenos cursos podem reabrir portas para novas oportunidades."
+            },
+            {
+                text: "Possui aplicativos em celular utilizados para o seu trabalho e organização do dia a dia?",
+                yes: "Hoje o celular é uma ferramenta essencial na vida da gente e no trabalho. Profissionais que utilizam aplicativos para otimizar tarefas ganham em produtividade e organização.",
+                no: "Se você ainda não possui apps em seu celular utilizados para o trabalho e organização do dia a dia você pode estar perdendo tempo. Há aplicativos gratuitos que ajudam desde organização de tarefas até controle de finanças. Inserir essa prática no dia a dia também é um diferencial importante."
+            },
+            {
+                text: "Você compreende minimamente um outro idioma?",
+                yes: "Por fim, dentre as competências necessárias atualmente, dominar outro idioma é abrir portas para o mundo. O inglês, por exemplo, pode aumentar o salário em até 61% no Brasil, segundo a Catho.",
+                no: "Dominar um segundo idioma é, também, uma habilidade estratégica atualmente. Mesmo aprender o básico já faz diferença."
+            },
+            {
+                text: "Já tem um objetivo profissional definido?",
+                yes: "Você tem um objetivo profissional definido, parabéns! Ter clareza do objetivo ajuda a focar energia e esforços, transformando passos em conquistas. Isso mostra que você tem visão de futuro.",
+                no: "Sem metas claras, é fácil andar em círculos. Definir um objetivo profissional é como traçar um mapa: você pode até mudar o caminho, mas sabe para onde quer ir. Reflita sobre o que realmente deseja alcançar."
+            }
+        ];
+
+        // Variáveis globais
+        let currentQuestion = 0;
+        let answers = [];
+        let resultTexts = [];
+
+        // Elementos DOM
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const questionScreen = document.getElementById('question-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const thankyouScreen = document.getElementById('thankyou-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const testBtn = document.getElementById('test-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const skipBtn = document.getElementById('skip-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        const questionText = document.getElementById('question-text');
+        const currentQuestionEl = document.getElementById('current-question');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const optionYes = document.getElementById('option-yes');
+        const optionNo = document.getElementById('option-no');
+        
+        const courseResult = document.getElementById('course-result');
+        const resultText = document.getElementById('result-text');
+        const errorMessage = document.getElementById('error-message');
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            totalQuestionsEl.textContent = questions.length;
+            
+            // Event Listeners
+            startBtn.addEventListener('click', startQuiz);
+            testBtn.addEventListener('click', testFirebaseConnection);
+            nextBtn.addEventListener('click', nextQuestion);
+            optionYes.addEventListener('click', selectOption);
+            optionNo.addEventListener('click', selectOption);
+            submitBtn.addEventListener('click', submitData);
+            skipBtn.addEventListener('click', skipData);
+            restartBtn.addEventListener('click', restartQuiz);
+        });
+
+        function startQuiz() {
+            welcomeScreen.classList.remove('active');
+            questionScreen.classList.add('active');
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            currentQuestion = index;
+            const question = questions[index];
+            
+            questionText.textContent = question.text;
+            currentQuestionEl.textContent = index + 1;
+            
+            // Atualizar barra de progresso
+            const progress = ((index + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Resetar seleção
+            optionYes.classList.remove('selected');
+            optionNo.classList.remove('selected');
+            nextBtn.disabled = true;
+        }
+
+        function selectOption(e) {
+            // Remover seleção anterior
+            optionYes.classList.remove('selected');
+            optionNo.classList.remove('selected');
+            
+            // Adicionar seleção atual
+            e.currentTarget.classList.add('selected');
+            
+            // Habilitar botão próximo
+            nextBtn.disabled = false;
+        }
+
+        function nextQuestion() {
+            // Salvar resposta
+            const selectedOption = document.querySelector('.option.selected');
+            if (!selectedOption) return;
+            
+            const answer = selectedOption.dataset.value;
+            answers.push(answer);
+            
+            // Salvar texto do resultado
+            const question = questions[currentQuestion];
+            resultTexts.push(answer === 'yes' ? question.yes : question.no);
+            
+            // Próxima pergunta ou mostrar resultados
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            questionScreen.classList.remove('active');
+            resultScreen.classList.add('active');
+            
+            // Calcular resultado
+            const yesCount = answers.filter(a => a === 'yes').length;
+            const totalQuestions = questions.length;
+            
+            // Determinar curso recomendado
+            let course;
+            if (yesCount >= totalQuestions * 0.7) {
+                course = "";
+            } else if (yesCount >= totalQuestions * 0.4) {
+                course = "";
+            } else {
+                course = "";
+            }
+            
+            courseResult.textContent = course;
+            
+            // Gerar texto do resultado
+            let finalText = resultTexts.join(' ') + '<br><br>';
+            
+            if (yesCount >= totalQuestions * 0.7) {
+                finalText += "Agora é a sua vez de crescer! Suas respostas indicam que você está no caminho certo, já construiu uma boa base e deve continuar se atualizando. O próximo passo pode ser buscar especializações e ampliar seu networking. Conte com o Senac para seguir nessa jornada de crescimento!";
+            } else if (yesCount >= totalQuestions * 0.4) {
+                finalText += "Agora é a sua vez de inovar! Suas respostas indicam que você já tem conquistas, mas precisa acelerar a qualificação para não perder espaço. Um plano de estudos e a adoção de novas ferramentas tecnológicas podem fazer a diferença. Conte com o Senac para acelerar essa jornada de crescimento!";
+            } else {
+                finalText += "Agora é a sua vez de mudar! Suas respostas mostram que é hora de agir! Não encare como crítica, mas como ponto de partida. Comece por algo simples: um curso online, aprender a usar uma IA ou aplicativos no celular. Cada pequeno passo abre novas oportunidades e o Senac está aqui para te ajudar.";
+            }
+            
+            resultText.innerHTML = finalText;
+            
+            // Salvar resultados no Firebase (sem dados pessoais)
+            saveResultsToFirebase(yesCount, totalQuestions, course);
+        }
+
+        function saveResultsToFirebase(yesCount, totalQuestions, course) {
+            // Criar um ID único para esta sessão
+            const sessionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+            
+            db.collection("quiz_results").doc(sessionId).set({
+                yesCount: yesCount,
+                totalQuestions: totalQuestions,
+                course: course,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .catch((error) => {
+                console.error("Erro ao salvar resultados: ", error);
+            });
+        }
+
+        function submitData() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            // Validar e-mail
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                showError("Por favor, insira um e-mail válido.");
+                return;
+            }
+            
+            // Mostrar loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Enviando...";
+            errorMessage.style.display = 'none';
+            
+            // Salvar dados no Firebase
+            const sessionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+            
+            db.collection("quiz_contacts").doc(sessionId).set({
+                name: name || 'Não informado',
+                email: email || 'Não informado',
+                phone: phone || 'Não informado',
+                yesCount: answers.filter(a => a === 'yes').length,
+                totalQuestions: questions.length,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                resultScreen.classList.remove('active');
+                thankyouScreen.classList.add('active');
+            })
+            .catch((error) => {
+                console.error("Erro ao salvar contato: ", error);
+                showError("Ocorreu um erro ao enviar seus dados. Verifique as regras do Firebase. Erro: " + error.message);
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Enviar dados";
+            });
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function skipData() {
+            resultScreen.classList.remove('active');
+            thankyouScreen.classList.add('active');
+        }
+
+        function restartQuiz() {
+            answers = [];
+            resultTexts = [];
+            thankyouScreen.classList.remove('active');
+            welcomeScreen.classList.add('active');
+        }
+
+        function testFirebaseConnection() {
+            testBtn.disabled = true;
+            testBtn.textContent = "Testando conexão...";
+            
+            const testId = "test_" + Date.now();
+            
+            db.collection("test_connection").doc(testId).set({
+                message: "Teste de conexão com Firebase",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert("Conexão com Firebase bem-sucedida! Verifique as regras de segurança se ainda houver problemas.");
+                console.log("Conexão com Firebase bem-sucedida!");
+            })
+            .catch((error) => {
+                alert("Erro na conexão com Firebase: " + error.message + "\n\nVerifique as regras de segurança do Firestore.");
+                console.error("Erro na conexão com Firebase: ", error);
+            })
+            .finally(() => {
+                testBtn.disabled = false;
+                testBtn.textContent = "Testar Conexão Firebase";
+            });
+        }
+    </script>
+</body>
+</html>

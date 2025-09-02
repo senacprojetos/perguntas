@@ -1,0 +1,330 @@
+/* --- GERAL & RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: rgb(1, 1, 117);
+}
+
+/* --- CABEÇALHO COM LOGO --- */
+.main-header {
+    padding: 20px 5%;
+    display: flex;
+    justify-content: flex-end; /* Alinha a logo à direita */
+    align-items: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.logo-container img {
+    height: 40px; /* Ajuste o tamanho conforme necessário */
+}
+
+/* --- ESTILOS DA LANDING PAGE --- */
+.landing-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0 5%;
+    background: rgb(1, 1, 117);
+    position: relative;
+}
+
+.landing-container::before { /* Overlay para melhorar a legibilidade */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hero-section {
+    text-align: center;
+    color: #fff;
+    z-index: 1;
+    max-width: 800px;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero-section .subtitle {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-button {
+    background-color: #ff6900; /* Laranja SENAC */
+    color: #fff;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 700;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(255, 105, 0, 0.3);
+}
+
+/* --- ESTILOS DA PÁGINA DO QUIZ --- */
+.quiz-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.quiz-container {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 700px;
+    padding: 3rem;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#progress-bar-container {
+    width: 100%;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 2.5rem;
+}
+
+#progress-bar {
+    height: 12px;
+    background: linear-gradient(90deg, #ff6900, #ff8c00);
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.4s ease-in-out;
+}
+
+#question {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    line-height: 1.4;
+}
+
+#answers-container button {
+    display: block;
+    width: 100%;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    background-color: transparent;
+    border: 2px solid #ced4da;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+#answers-container button:hover {
+    background-color: #ff6900;
+    color: white;
+    border-color: #ff6900;
+    transform: translateX(10px);
+}
+
+.hidden {
+    display: none;
+}
+
+/* --- ESTILOS DA TELA DE RESULTADO --- */
+#result-session {
+    text-align: center;
+}
+
+#result-session h2 {
+    margin-bottom: 2rem;
+}
+
+#result-session h3 {
+    font-size: 2rem;
+    color: #ff6900;
+    margin-bottom: 1rem;
+}
+
+#result-session p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.result-link {
+    display: inline-block;
+    background-color: blue;
+    color: #fff;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: transform 0.3s ease;
+}
+.result-link:hover {
+    transform: scale(1.05);
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #ff6900;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    .hero-section .subtitle {
+        font-size: 1rem;
+    }
+    .quiz-container {
+        padding: 2rem;
+    }
+    #question {
+        font-size: 1.5rem;
+    }
+}
+
+/* --- ESTILOS ADICIONAIS PARA O MENU (Adicionar ao final do style.css) --- */
+
+/* Ajuste no Cabeçalho para alinhar itens nas extremidades */
+.main-header {
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between; /* Alterado de flex-end para space-between */
+    align-items: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10; /* Garante que o header fique sobre outros elementos */
+}
+
+/* Estilização do menu de navegação */
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px; /* Espaçamento entre os itens do menu */
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #ffffff; /* Cor branca para o texto, já que o fundo tem overlay */
+    font-weight: 600;
+    font-size: 1rem;
+    position: relative;
+    padding-bottom: 5px;
+    transition: color 0.3s ease;
+}
+
+/* Efeito de sublinhado na hover */
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #ff6900; /* Laranja SENAC */
+    transition: width 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: #ff6900; /* Muda a cor do texto ao passar o mouse */
+}
+
+.main-nav a:hover::after {
+    width: 100%; /* Expande o sublinhado */
+}
+
+/* --- AJUSTES DE RESPONSIVIDADE PARA O MENU --- */
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column; /* Empilha o menu e a logo em telas pequenas */
+        gap: 15px;
+    }
+
+    .main-nav ul {
+        gap: 20px; /* Diminui o espaçamento */
+        padding-top: 10px; /* Adiciona um espaço acima do menu */
+    }
+
+    .main-nav a {
+        font-size: 0.9rem; /* Diminui a fonte do menu */
+    }
+}
+/* --- ESTILOS DO FORMULÁRIO DE CONTATO --- */
+#contact-session {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#contact-session h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#contact-session p {
+    margin-bottom: 1.5rem;
+}
+
+#contact-form input {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    border-radius: 15px;
+    border: 2px solid #ced4da;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#contact-form input:focus {
+    outline: none;
+    border-color: #ff6900;
+}
+
+#contact-form .cta-button {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+}

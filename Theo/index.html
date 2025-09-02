@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubra seu curso no Senac</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Tela de Boas-Vindas -->
+        <div id="welcome-screen" class="screen active">
+            <h1>Quiz Senac</h1>
+            <p>Responda nosso questionário e descubra qual curso combina mais com seu perfil.</p>
+            <button id="start-btn" class="btn">Começar agora</button>
+        </div>
+
+        <!-- Tela do Questionário -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+            <h2 id="question-text">Pergunta</h2>
+            <div id="options-container"></div>
+            <div id="feedback-container" class="feedback"></div>
+            <button id="next-btn" class="btn" style="display: none;">Próxima Pergunta</button>
+        </div>
+
+        <!-- Tela de Resultado -->
+        <div id="result-screen" class="screen">
+            <h1>Seu perfil profissional:</h1>
+            <div id="course-result" class="result-course">
+                <h2 id="course-name">Seu perfil</h2>
+                <p id="course-description">Descrição do perfil</p>
+                <div id="score-display" class="score-display"></div>
+            </div>
+            <p>Quer receber mais informações sobre nossos cursos?</p>
+            <button id="show-form-btn" class="btn">Deixar meu contato</button>
+            <button id="restart-btn" class="btn" style="background: #666;">Fazer novamente</button>
+        </div>
+
+        <!-- Tela de Formulário de Contato -->
+        <div id="form-screen" class="screen">
+            <h1>Deixe seus dados</h1>
+            <p>Preencha abaixo para entrarmos em contato com mais informações:</p>
+            <input type="text" id="name-input" placeholder="Seu nome">
+            <input type="email" id="email-input" placeholder="Seu e-mail">
+            <input type="tel" id="phone-input" placeholder="Seu telefone">
+            <button id="submit-btn" class="btn">Enviar dados</button>
+            <button id="skip-btn" class="btn" style="background: #666;">Pular esta etapa</button>
+        </div>
+
+        <!-- Tela de Agradecimento -->
+        <div id="thankyou-screen" class="screen">
+            <h1>Obrigado por participar!</h1>
+            <p>Em breve entraremos em contato com mais informações sobre nossos cursos.</p>
+            <button id="final-restart-btn" class="btn">Fazer teste novamente</button>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Configuração do Firebase (substitua com suas próprias configurações)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJNpgLEMvWuVs34U3WxhPJk5SrFx-48Yk",
+            authDomain: "quiz-senac-9d993.firebaseapp.com",
+            projectId: "quiz-senac-9d993",
+            storageBucket: "quiz-senac-9d993.firebasestorage.app",
+            messagingSenderId: "258272404493",
+            appId: "1:258272404493:web:fe1b29941a1975472ba144",
+            measurementId: "G-E754VNJFTR"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Dados do questionário com as perguntas de sim/não
+        const questions = [
+            {
+                question: "Você está empregado?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "Você está trabalhando, parabéns! Estar empregado já é um passo importante para manter sua experiência ativa e abrir portas para novas oportunidades. Continue investindo em si mesmo para não apenas se manter no mercado, mas também crescer." },
+                    { text: "Não", value: "no", feedback: "Você está desempregado, mas não desanime. Segundo dados do IBGE, cerca de 7,5% dos brasileiros estão desempregados (2025). Isso mostra que a competição é grande, mas também que quem se qualifica aumenta muito suas chances de voltar ao mercado. Talvez seja a hora de investir em cursos profissionalizantes para reverter essa condição." }
+                ]
+            },
+            {
+                question: "Atualmente você está estudando?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "Estudar é uma das maiores vantagens competitivas no mundo do trabalho. Quem estuda aumenta em até 73% as chances de conquistar melhores salários, segundo pesquisas do Ipea. Você já está no caminho certo!" },
+                    { text: "Não", value: "no", feedback: "Atenção: deixar de estudar pode ser um freio na sua carreira. Em um mundo em que as profissões mudam rapidamente, quem não estuda fica para trás. Que tal começar com algo acessível, acesse as oficinas online gratuitas do Senac em senacrs.com.br" }
+                ]
+            },
+            {
+                question: "Você domina o uso do computador (pacote Office)?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "O domínio do Excel, Word e PowerPoint é praticamente uma necessidade universal no mercado de trabalho. Esse conhecimento torna você mais produtivo e preparado para qualquer vaga." },
+                    { text: "Não", value: "no", feedback: "Se você ainda não domina o uso do computador vale a pena aprender. O pacote Office é exigido em 8 de cada 10 vagas de emprego administrativo no Brasil. Hoje existem cursos que podem ser concluídos em poucas semanas." }
+                ]
+            },
+            {
+                question: "Já utiliza Inteligência Artificial em seu dia a dia?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "Você sabia que o uso de IA é cada vez mais valorizado pelas empresas? Segundo a PwC, até 2030, a IA pode adicionar até 15,7 trilhões de dólares à economia global. Você já está surfando essa onda!" },
+                    { text: "Não", value: "no", feedback: "Atenção, você está deixando passar uma grande oportunidade. A IA já está transformando o mercado de trabalho em todas as áreas. Aprender a usá-la não exige formação em tecnologia: qualquer pessoa pode começar com ferramentas simples para aumentar sua produtividade." }
+                ]
+            },
+            {
+                question: "Fez algum curso de atualização nos últimos 2 anos?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "Parabéns por ter feito um curso nos últimos 2 anos! Esse é o espírito de um profissional atualizado. Estudos mostram que quem investe regularmente em capacitação tem até 30% mais chances de progressão na carreira." },
+                    { text: "Não", value: "no", feedback: "O conhecimento envelhece cada vez mais rapidamente. Em muitas áreas, o que você aprendi há 5 anos pode já estar ultrapassado. Pequenos cursos podem reabrir portas para novas oportunidades." }
+                ]
+            },
+            {
+                question: "Possui aplicativos em celular utilizados para o seu trabalho e organização do dia a dia?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "Hoje o celular é uma ferramenta essencial na vida da gente e no trabalho. Profissionais que utilizam aplicativos para otimizar tarefas ganham em produtividade e organização." },
+                    { text: "Não", value: "no", feedback: "Se você ainda não possui apps em seu celular utilizados para o trabalho e organização do dia a dia você pode estar perdendo tempo. Há aplicativos gratuitos que ajudam desde organização de tarefas até controle de finanças. Inserir essa prática no dia a dia também é um diferencial importante." }
+                ]
+            },
+            {
+                question: "Você compreende minimamente um outro idioma?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "Por fim, dentre as competências necessárias atualmente, dominar outro idioma é abrir portas para o mundo. O inglês, por exemplo, pode aumentar o salário em até 61% no Brasil, segundo a Catho." },
+                    { text: "Não", value: "no", feedback: "Dominar um segundo idioma é, também, uma habilidade estratégica atualmente. Mesmo aprender o básico já faz diferença." }
+                ]
+            },
+            {
+                question: "Já tem um objetivo profissional definido?",
+                options: [
+                    { text: "Sim", value: "yes", feedback: "Você tem um objetivo profissional definido, parabéns! Ter clareza do objetivo ajuda a focar energia e esforços, transformando passos em conquistas. Isso mostra que você tem visão de futuro." },
+                    { text: "Não", value: "no", feedback: "Sem metas claras, é fácil andar em círculos. Definir um objetivo profissional é como traçar um mapa: você pode até mudar o caminho, mas sabe para onde quer ir. Reflita sobre o que realmente deseja alcançar." }
+                ]
+            }
+        ];
+
+        // Resultados finais baseados no número de respostas "Sim"
+        const results = [
+            {
+                minScore: 6, // 6-8 respostas Sim
+                name: "Perfil em Ascensão",
+                description: "Agora é a sua vez de crescer! Suas respostas indicam que você está no caminho certo, já construiu uma boa base e deve continuar se atualizando. O próximo passo pode ser buscar especializações e ampliar seu networking. Conte com o Senac para seguir nessa jornada de crescimento!"
+            },
+            {
+                minScore: 3, // 3-5 respostas Sim
+                name: "Perfil em Desenvolvimento",
+                description: "Agora é a sua vez de inovar! Suas respostas indicam que você já tem conquistas, mas precisa acelerar a qualificação para não perder espaço. Um plano de estudos e a adoção de novas ferramentas tecnológicas podem fazer a diferença. Conte com o Senac para acelerar essa jornada de crescimento!"
+            },
+            {
+                minScore: 0, // 0-2 respostas Sim
+                name: "Perfil em Início de Jornada",
+                description: "Agora é a sua vez de mudar! Suas respostas mostram que é hora de agir! Não encare como crítica, mas como ponto de partida. Comece por algo simples: um curso online, aprender a usar uma IA ou aplicativos no celular. Cada pequeno passo abre novas oportunidades e o Senac está aqui para te ajudar."
+            }
+        ];
+
+        // Variáveis globais
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let userData = {};
+        let yesCount = 0;
+
+        // Elementos da DOM
+        const screens = {
+            welcome: document.getElementById('welcome-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            result: document.getElementById('result-screen'),
+            form: document.getElementById('form-screen'),
+            thankyou: document.getElementById('thankyou-screen')
+        };
+
+        // Inicializar a aplicação
+        function initApp() {
+            // Event listeners para os botões
+            document.getElementById('start-btn').addEventListener('click', startQuiz);
+            document.getElementById('next-btn').addEventListener('click', nextQuestion);
+            document.getElementById('show-form-btn').addEventListener('click', showForm);
+            document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+            document.getElementById('submit-btn').addEventListener('click', submitData);
+            document.getElementById('skip-btn').addEventListener('click', skipForm);
+            document.getElementById('final-restart-btn').addEventListener('click', restartQuiz);
+        }
+
+        // Iniciar o questionário
+        function startQuiz() {
+            showScreen('quiz');
+            currentQuestion = 0;
+            userAnswers = [];
+            yesCount = 0;
+            loadQuestion();
+        }
+
+        // Carregar pergunta
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            // Esconder feedback e botão próximo inicialmente
+            document.getElementById('feedback-container').innerHTML = '';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            question.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.classList.add('btn', 'btn-option');
+                button.addEventListener('click', () => selectOption(option));
+                optionsContainer.appendChild(button);
+            });
+            
+            // Atualizar barra de progresso
+            const progressPercent = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress').style.width = `${progressPercent}%`;
+        }
+
+        // Selecionar opção
+        function selectOption(option) {
+            // Registrar resposta
+            userAnswers.push({
+                question: questions[currentQuestion].question,
+                answer: option.text,
+                value: option.value
+            });
+            
+            // Contar respostas "Sim"
+            if (option.value === "yes") {
+                yesCount++;
+            }
+            
+            // Mostrar feedback
+            const feedbackContainer = document.getElementById('feedback-container');
+            feedbackContainer.innerHTML = `<p>${option.feedback}</p>`;
+            
+            // Desabilitar botões de opção
+            const optionButtons = document.querySelectorAll('.btn-option');
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Mostrar botão para próxima pergunta
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        // Próxima pergunta
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        // Mostrar resultado
+        function showResult() {
+            showScreen('result');
+            
+            // Determinar resultado com base no número de respostas "Sim"
+            let result;
+            if (yesCount >= 6) {
+                result = results[0];
+            } else if (yesCount >= 3) {
+                result = results[1];
+            } else {
+                result = results[2];
+            }
+            
+            document.getElementById('course-name').textContent = result.name;
+            document.getElementById('course-description').textContent = result.description;
+            document.getElementById('score-display').textContent = `Você respondeu "Sim" a ${yesCount} de ${questions.length} perguntas`;
+            
+            // Salvar o resultado no userData
+            userData.result = result.name;
+            userData.yesCount = yesCount;
+        }
+
+        // Mostrar formulário de contato
+        function showForm() {
+            showScreen('form');
+        }
+
+        // Enviar dados para o Firebase
+        function submitData() {
+            const name = document.getElementById('name-input').value.trim();
+            const email = document.getElementById('email-input').value.trim();
+            const phone = document.getElementById('phone-input').value.trim();
+            
+            // Validação básica
+            if (name && !/^[a-zA-ZÀ-ÿ\s]{2,100}$/.test(name)) {
+                alert('Por favor, insira um nome válido (2-100 caracteres).');
+                return;
+            }
+            
+            if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+                alert('Por favor, insira um e-mail válido.');
+                return;
+            }
+            
+            if (phone && !/^[\d\s\(\)\-\+]{10,20}$/.test(phone)) {
+                alert('Por favor, insira um telefone válido.');
+                return;
+            }
+            
+            userData = {
+                ...userData,
+                name: name || null,
+                email: email || null,
+                phone: phone || null,
+                answers: userAnswers,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Salvar no Firestore
+            db.collection("quizResponses").add(userData)
+                .then(() => {
+                    showScreen('thankyou');
+                })
+                .catch((error) => {
+                    console.error("Erro ao salvar dados: ", error);
+                    alert("Ocorreu um erro ao enviar seus dados. Tente novamente.");
+                });
+        }
+
+        // Pular formulário de contato
+        function skipForm() {
+            // Salvar apenas as respostas sem dados pessoais
+            const anonymousData = {
+                result: userData.result,
+                yesCount: userData.yesCount,
+                answers: userAnswers,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            db.collection("quizResponses").add(anonymousData)
+                .then(() => {
+                    showScreen('thankyou');
+                })
+                .catch((error) => {
+                    console.error("Erro ao salvar dados: ", error);
+                    alert("Ocorreu um erro. Tente novamente.");
+                });
+        }
+
+        // Reiniciar questionário
+        function restartQuiz() {
+            userAnswers = [];
+            userData = {};
+            yesCount = 0;
+            showScreen('welcome');
+        }
+
+        // Mostrar tela específica
+        function showScreen(screenName) {
+            for (const screen in screens) {
+                screens[screen].classList.remove('active');
+            }
+            screens[screenName].classList.add('active');
+        }
+
+        // Inicializar a aplicação quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
