@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alunos</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        nav button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        /* Estilo adicional para os botões  
+        */
+        
+        nav button:hover {
+            background-color: #ddd;
+        }
+        nav button:active {
+            background-color: #ccc;
+        }
+
+        /*limitar a 4 botoes por linha e alinhados e tamanho fixo*/
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        nav button {
+            flex: 1 1 20%;
+            box-sizing: border-box;
+            max-width: 120px;
+        }
+        
+
+        /* estilizar no modelo Senac*/
+        body {
+            background-color: #f4f4f4;
+        }
+        nav button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        nav button:hover {
+            background-color: #0056b3;
+        }
+        nav button:active {
+            background-color: #004085;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        /*Fundo banco para o logo do Senac*/
+        header img {
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Cabeçalho Senac-->
+    <header>
+        <h1>Bem-vindo ao Portal de Quizzes dos Alunos</h1>
+        <p>Selecione um quiz para começar</p>
+        <!--Logo Senac-->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Senac_logo.svg/1200px-Senac_logo.svg.png" alt="Logo Senac" width="150">
+
+    </header>
+
+
+    <!-- Botoes de navegação dos quizes -->
+    <nav>
+        <button onclick="location.href='../LuizIuri/'">Quiz 1</button>
+        <button onclick="location.href='../MatheusPedro/'">Quiz 2</button>
+        <button onclick="location.href='quiz3.html'">Quiz 3</button>
+        <button onclick="location.href='quiz4.html'">Quiz 4</button>
+        <button onclick="location.href='quiz5.html'">Quiz 5</button>
+        <button onclick="location.href='quiz6.html'">Quiz 6</button>
+        <button onclick="location.href='quiz7.html'">Quiz 7</button>
+        <button onclick="location.href='quiz8.html'">Quiz 8</button>
+        <button onclick="location.href='quiz9.html'">Quiz 9</button>
+        <button onclick="location.href='quiz10.html'">Quiz 10</button>
+        <button onclick="location.href='quiz11.html'">Quiz 11</button>
+        <button onclick="location.href='quiz12.html'">Quiz 12</button>
+        </nav>
+    
+</body>
+</html>

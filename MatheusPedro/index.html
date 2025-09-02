@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sua Carreira em Foco</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+        :root {
+            --senac-blue: #007ac1;
+            --senac-orange: #f26522;
+            --senac-white: #ffffff;
+            --gray-light: #f3f4f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-light);
+        }
+        
+        .container {
+            background-color: var(--senac-white);
+            border: 2px solid var(--senac-blue);
+        }
+        
+        .title {
+            color: var(--senac-blue);
+        }
+
+        .subtitle {
+            color: #4b5563;
+        }
+
+        .option-btn {
+            background-color: var(--gray-light);
+            border: 1px solid #d1d5db;
+            color: #4b5563;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .option-btn:hover {
+            background-color: #e5e7eb;
+        }
+
+        .option-btn.selected {
+            background-color: var(--senac-orange);
+            color: var(--senac-white);
+            font-weight: 700;
+        }
+
+        .submit-btn, .restart-btn {
+            background-color: var(--senac-orange);
+            color: var(--senac-white);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .submit-btn:hover, .restart-btn:hover {
+            background-color: #d1561f;
+        }
+        
+        .question-text {
+            color: #1f2937;
+        }
+
+        .result-text {
+            color: var(--senac-blue);
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .final-result {
+            border: 2px solid var(--senac-blue);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Notificações -->
+    <div id="message-box" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 shadow-xl max-w-sm w-full text-center">
+            <p id="message-text" class="text-gray-800 mb-4"></p>
+            <button onclick="document.getElementById('message-box').classList.add('hidden')" class="bg-senac-orange text-white py-2 px-4 rounded-full font-bold transition-colors hover:bg-d1561f">OK</button>
+        </div>
+    </div>
+
+    <main class="container rounded-xl shadow-2xl p-8 w-full max-w-4xl">
+        <h1 class="title text-3xl font-bold mb-2">Quiz Senac Lajeado</h1>
+        <p class="subtitle text-gray-500 mb-8">Responda as perguntas abaixo e descubra qual o seu perfil profissional.</p>
+
+        <form id="quiz-form" class="space-y-6">
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">1) Você está empregado?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="1">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="1">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="1"></div>
+            </div>
+
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">2) Atualmente você está estudando?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="2">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="2">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="2"></div>
+            </div>
+
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">3) Você domina o uso do computador (pacote Office)?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="3">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="3">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="3"></div>
+            </div>
+
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">4) Já utiliza Inteligência Artificial em seu dia a dia?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="4">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="4">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="4"></div>
+            </div>
+
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">5) Fez algum curso de atualização nos últimos 2 anos?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="5">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="5">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="5"></div>
+            </div>
+            
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">6) Possui aplicativos em celular utilizados para o seu trabalho e organização do dia a dia?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="6">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="6">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="6"></div>
+            </div>
+
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">7) Você compreende minimamente um outro idioma?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="7">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="7">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="7"></div>
+            </div>
+
+            <div class="question-card p-6 bg-gray-50 rounded-lg shadow-md">
+                <p class="question-text text-lg font-medium mb-4">8) Já tem um objetivo profissional definido?</p>
+                <div class="options flex flex-col sm:flex-row gap-4">
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="sim" data-question="8">✅ Sim</button>
+                    <button type="button" class="option-btn px-6 py-3 rounded-full flex-1" data-value="nao" data-question="8">❌ Não</button>
+                </div>
+                <div class="result-text" data-result="8"></div>
+            </div>
+        </form>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <button id="submit-btn" class="submit-btn px-6 py-3 rounded-full font-bold shadow-lg">Ver Resultado</button>
+            <button id="restart-btn" class="restart-btn px-6 py-3 rounded-full font-bold shadow-lg hidden">Reiniciar</button>
+        </div>
+        
+        <div id="final-result" class="final-result p-6 rounded-lg mt-8 hidden">
+            <div id="result-paragraph" class="result-paragraph text-gray-700 text-lg leading-relaxed"></div>
+        </div>
+        <script src="script.js"></script>
+    </main>
+
+    
+</body>
+</html>
